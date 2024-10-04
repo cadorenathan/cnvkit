@@ -8,7 +8,7 @@ conda config --add channels conda-forge
 conda install cnvkit
 
 # Run batches
-cnvkit.py batch *_tumor.bam --normal *_normal.bam \
+cnvkit.py batch tumor/*_tumor.bam --normal normal/*.bam \
 --fasta Homo_sapiens_assembly38_noALT_noHLA_noDecoy_v0_Homo_sapiens_assembly38_noALT_noHLA_noDecoy.fasta \
 --targets hg38_exome_2.0.editednames.bed  \
 --access access-5kb-mappable.hg38.bed \
@@ -16,4 +16,5 @@ cnvkit.py batch *_tumor.bam --normal *_normal.bam \
 --output-dir results_drop-low  \
 --drop-low-coverage \
 --diagram \
---scatter
+--scatter \
+-p 8
