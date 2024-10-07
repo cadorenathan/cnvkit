@@ -18,3 +18,18 @@ cnvkit.py batch tumor/*_tumor.bam --normal normal/*.bam \
 --diagram \
 --scatter \
 -p 8
+
+# LOH
+cnvkit.py call ../results_drop-low/4269-9M60_TM_4PLEX_020623__4269-9M60_SG_12PLEX_290523_tumor.cns \
+-v 4269-9M60_TM_4PLEX_020623__4269-9M60_SG_12PLEX_290523.hard-filtered.vcf.gz \
+-o 4269-9M60_TM_4PLEX_020623__4269-9M60_SG_12PLEX_290523.call.vcf.cns
+
+cnvkit.py scatter ../results_drop-low/4269-9M60_TM_4PLEX_020623__4269-9M60_SG_12PLEX_290523_tumor.cnr \
+-s ../results_drop-low/4269-9M60_TM_4PLEX_020623__4269-9M60_SG_12PLEX_290523_tumor.cns \
+-v 4269-9M60_TM_4PLEX_020623__4269-9M60_SG_12PLEX_290523.hard-filtered.vcf.gz \
+--output 4269-9M60_TM_4PLEX_020623__4269-9M60_SG_12PLEX_290523.baf.scatter.png
+
+#call
+    cnvkit.py segmetrics -s ../results_drop-low/4269-9M60_TM_4PLEX_020623__4269-9M60_SG_12PLEX_290523_tumor.cn{s,r} --ci ---output-dir ./
+    cnvkit.py call 4269-9M60_TM_4PLEX_020623__4269-9M60_SG_12PLEX_290523_tumor.segmetrics.cns -x male -v 4269-9M60_TM_4PLEX_020623__4269-9M60_SG_12PLEX_290523.hard-filtered.vcf.gz -o 4269-9M60_TM_4PLEX_020623__4269-9M60_SG_12PLEX_290523_tumor.segmetrics.call.cns
+    cnvkit.py export vcf 4269-9M60_TM_4PLEX_020623__4269-9M60_SG_12PLEX_290523.hard-filtered.vcf.gz -x male  -i 4269-9M60 -o 4269-9M60_TM_4PLEX_020623__4269-9M60_SG_12PLEX_290523.cnv.vcf
