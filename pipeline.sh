@@ -19,6 +19,10 @@ cnvkit.py batch tumor/*_tumor.bam --normal normal/*.bam \
 --scatter \
 -p 8
 
+cnvkit.py scatter -s 4484-1F77_TM_4PLEX_020623__4484-1F77_SG_12PLEX_290523_tumor.cn{s,r} -c 25000000-55000000 -g ERBB2
+
+
+################################################################################################################################
 # LOH
 cnvkit.py call ../results_drop-low/4269-9M60_TM_4PLEX_020623__4269-9M60_SG_12PLEX_290523_tumor.cns \
 -v 4269-9M60_TM_4PLEX_020623__4269-9M60_SG_12PLEX_290523.hard-filtered.vcf.gz \
