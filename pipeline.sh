@@ -19,6 +19,15 @@ cnvkit.py batch tumor/*_tumor.bam --normal normal/*.bam \
 --scatter \
 -p 8
 
+#adjusting by tumor purity
+#using a tab file with sample in the second column and purity in the third
+while IFS=$'\t' read -r col1 col2 col3; do
+cnvkit.py call ${col2}.cns -y -m clonal --purity ${col3} -o ${col2}.call.cns
+done < celularidade_mama.txt
+
+
+
+
 cnvkit.py scatter -s 4484-1F77_TM_4PLEX_020623__4484-1F77_SG_12PLEX_290523_tumor.cn{s,r} -c chr17:25000000-55000000 -g ERBB2
 
 
