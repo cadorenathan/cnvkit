@@ -1,3 +1,4 @@
+
 # Install cnvkit using Conda
 # Configure the sources where conda will find packages
 conda config --add channels defaults
@@ -22,11 +23,20 @@ cnvkit.py batch tumor/*_tumor.bam --normal normal/*.bam \
 #adjusting by tumor purity
 #using a tab file with sample in the second column and purity in the third
 while IFS=$'\t' read -r col1 col2 col3; do
-cnvkit.py call ${col2}.cns -y -m clonal --purity ${col3} -o ../cnvkit_results/purity_breast/${col2}.call.cns
-done < celularidade_mama.txt
+cnvkit.py call results_drop-low/${col2}_tumor.cns -y -m clonal --purity ${col3} -o call_purity/${col2}_tumor.call.cns
+done < ../cnvkit_results/celularidade_mama.txt
+cp call_purity/* ../cnvkit_results/purity_breast
 
 
+#GISTIC 2.0
 
+cnvkit.py export seg purity_breast/*.cns -o purity_breast.gistic.segments
+
+conda create -n gistic2
+conda install -c hcc gistic2
+
+#confidence 95%, Threshold for copy number amplifications/deletions 0.3, q-value 0.01 
+gistic2 -b dir -seg seg.file -refgene ref -conf 0.95 -ta 0.3 -td 0.3 -qvt 0.01
 
 cnvkit.py scatter -s 4484-1F77_TM_4PLEX_020623__4484-1F77_SG_12PLEX_290523_tumor.cn{s,r} -c chr17:25000000-55000000 -g ERBB2
 
