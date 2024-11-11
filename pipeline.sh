@@ -20,6 +20,7 @@ cnvkit.py batch tumor/*_tumor.bam --normal normal/*.bam \
 --scatter \
 -p 8
 
+
 #adjusting by tumor purity
 #using a tab file with sample in the second column and purity in the third
 while IFS=$'\t' read -r col1 col2 col3; do
@@ -27,19 +28,28 @@ cnvkit.py call results_drop-low/${col2}_tumor.cns -y -m clonal --purity ${col3} 
 done < ../cnvkit_results/celularidade_mama.txt
 cp call_purity/* ../cnvkit_results/purity_breast
 
+while IFS=$'\t' read -r col1 col2 col3; do
+cnvkit.py call results_drop-low/${col2}_tumor.cns -y -m clonal --purity ${col3} -o purity_prostate/${col2}_tumor.call.cns
+done < ../cnvkit_results/celularidade_prostata.txt
+
+cp call_purity/* ../cnvkit_results/purity_prostate
 
 #GISTIC 2.0
 
 cnvkit.py export seg purity_breast/*.cns -o purity_breast.gistic.segments
+cnvkit.py export seg purity_prostate/*.cns -o purity_prostate.gistic.segments
 
 conda create -n gistic2
 conda install -c hcc gistic2
 
 #confidence 95%, Threshold for copy number amplifications/deletions 0.3, q-value 0.01 
-gistic2 -b dir -seg seg.file -refgene ref -conf 0.95 -ta 0.3 -td 0.3 -qvt 0.01
+#gistic2 -b dir -seg seg.file -refgene ref -conf 0.95 -ta 0.3 -td 0.3 -qvt 0.01 
+#-maxspace -genegistic 1 -armpeel 1 -savegene 1 -rx 1
+gistic2 -b gistic2/prostate_conclusive_purity1st -seg cnvkit_results/purity_prostate.gistic.segments -refgene gistic2/hg38.UCSC.add_miR.160920.refgene.mat -conf 0.95 -ta 0.3 -td 0.3 -qvt 0.01 
+gistic2 -b gistic2/prostate_conclusive_purity2nd -seg cnvkit_results/purity_prostate.gistic.segments -refgene gistic2/hg38.UCSC.add_miR.160920.refgene.mat -conf 0.95 -ta 0.3 -td 0.3 -qvt 0.01 -maxspace -genegistic 1 -armpeel 1 -savegene 1 -rx 1
 
-cnvkit.py scatter -s 4484-1F77_TM_4PLEX_020623__4484-1F77_SG_12PLEX_290523_tumor.cn{s,r} -c chr17:25000000-55000000 -g ERBB2
-
+gistic2 -b gistic2/breast_conclusive_purity1st -seg cnvkit_results/purity_breast.gistic.segments -refgene gistic2/hg38.UCSC.add_miR.160920.refgene.mat -conf 0.95 -ta 0.3 -td 0.3 -qvt 0.01 
+gistic2 -b gistic2/breast_conclusive_purity2nd -seg cnvkit_results/purity_breast.gistic.segments -refgene gistic2/hg38.UCSC.add_miR.160920.refgene.mat -conf 0.95 -ta 0.3 -td 0.3 -qvt 0.01 -maxspace -genegistic 1 -armpeel 1 -savegene 1 -rx 1
 
 ################################################################################################################################
 # LOH
